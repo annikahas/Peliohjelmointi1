@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Spawnable
   layers:
   - Default
   - TransparentFX
@@ -46,6 +47,12 @@ TagManager:
     locked: 0
   - name: Wall
     uniqueID: 2373274259
+    locked: 0
+  - name: Pickup
+    uniqueID: 574518615
+    locked: 0
+  - name: Enemy
+    uniqueID: 786467451
     locked: 0
   - name: Player
     uniqueID: 1985435867
