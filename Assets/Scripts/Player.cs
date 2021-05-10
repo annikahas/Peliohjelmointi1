@@ -16,6 +16,11 @@ public class Player : MonoBehaviour
 
     public Healthbar healthBar;
 
+    public GameOver GameOver;
+    int maxPlatform = 0;
+
+    bool alive = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -27,10 +32,20 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+            movement.x = Input.GetAxisRaw("Horizontal");
+            movement.y = Input.GetAxisRaw("Vertical");
+    
+            mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
 
-        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+        if (alive)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            Time.timeScale = 0;
+        }
+
     }
 
     void FixedUpdate()
@@ -51,24 +66,16 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Enemy"))
         {
-            TakeDamage(20);
+            TakeDamage(10);
         }
-
-
-
-        /*if (collision.gameObject.CompareTag("Collectible"))
-        {
-            Score.scoreNum += 100;
-            Destroy(collision.gameObject);
-        }*/
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Collectible")
         {
             Score.scoreNum += 100;
-            //scoreText.text = "Score: " + scoreNum;
             Destroy(collision.gameObject);
+            spawner.PickUpNum--;
         }
 
         if(collision.gameObject.CompareTag("HPpack"))
@@ -76,17 +83,32 @@ public class Player : MonoBehaviour
             currentHealth = maxHealth;
             healthBar.SetHealth(currentHealth);
             Destroy(collision.gameObject);
+            spawner.PickUpNum--;
         }
 
         if (collision.tag == ("Ammopack"))
         {
             Ammo.ammoNum += 10;
             Destroy(collision.gameObject);
+            spawner.PickUpNum--;
         }
+
+        if (collision.gameObject.CompareTag("Projectile"))
+        {
+            TakeDamage(20);
+        }
+
     }
     void TakeDamage(int damage)
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        if (currentHealth == 0)
+        {
+            GameOver.Setup(maxPlatform);
+            alive = false;
+            spawner.PickUpNum = 0;
+            spawner.BigEnemyNum = 0;
+        }
     }
 }

@@ -8,30 +8,40 @@ public class Enemy : MonoBehaviour
     public float moveSpeed = 5f;
     private Rigidbody2D rb;
     private Vector2 movement;
-    // Start is called before the first frame update
+
+    GameObject target;
+    Vector3 directionToTarget;
+
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
+
+        target = GameObject.Find("Player");
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Vector3 direction = player.position - transform.position;
+        /*Vector3 direction = player.position - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         rb.rotation = angle;
         direction.Normalize();
-        movement = direction;
+        movement = direction;*/
+
+        if(target != null)
+        {
+            directionToTarget = (target.transform.position - transform.position).normalized;
+            rb.velocity = new Vector3(directionToTarget.x * moveSpeed, directionToTarget.y * moveSpeed); 
+        }
     }
 
-    private void FixedUpdate()
+    /*private void FixedUpdate()
     {
         moveCharacter(movement);
     }
     void moveCharacter(Vector2 direction)
     {
         rb.MovePosition((Vector2)transform.position + (direction * moveSpeed * Time.deltaTime));
-    }
+    }*/
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
